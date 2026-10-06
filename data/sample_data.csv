@@ -1,0 +1,13 @@
+timestamp,platform,topic,text,likes,comments,shares,views
+2026-10-01 09:00,YouTube,Artificial Intelligence,"AI is changing the future of technology",1200,85,210,25000
+2026-10-03 09:00,YouTube,Artificial Intelligence,"Everyone is talking about AI tools",1800,120,340,32000
+2026-10-01 10:00,YouTube,Python,"Python remains one of the best programming languages",950,65,140,18000
+2026-10-04 10:00,YouTube,Python,"Learning Python for AI and Machine Learning",1450,90,230,27000
+2026-10-01 11:00,YouTube,Cloud Computing,"Cloud computing is growing rapidly",780,45,110,15000
+2026-10-04 11:00,YouTube,Cloud Computing,"AWS and cloud skills are becoming important",1320,72,190,22000
+2026-10-01 12:00,YouTube,Generative AI,"Generative AI is everywhere in 2026",2500,180,520,45000
+2026-10-04 12:00,YouTube,Generative AI,"New AI models are changing content creation",3100,210,680,58000
+2026-10-01 13:00,YouTube,Machine Learning,"Machine learning is transforming businesses",1100,70,160,20000
+2026-10-04 13:00,YouTube,Machine Learning,"ML skills are in high demand",1700,100,280,29000
+2026-10-01 14:00,YouTube,Data Science,"Data science careers are growing",900,55,130,17000
+2026-10-04 14:00,YouTube,Data Science,"Python and data science go together",1250,80,200,24000
