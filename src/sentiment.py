@@ -1,34 +1,39 @@
 import pandas as pd
+from pathlib import Path
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-# Load our dataset
-data = pd.read_csv("data/sample_data.csv")
+# Project paths
+BASE_DIR = Path(__file__).resolve().parent.parent
+INPUT_FILE = BASE_DIR / "data" / "youtube_data.csv"
+OUTPUT_FILE = BASE_DIR / "data" / "youtube_analyzed_data.csv"
+
+# Load real YouTube data
+data = pd.read_csv(INPUT_FILE)
 
 # Create VADER analyzer
 sia = SentimentIntensityAnalyzer()
 
-# Function to classify sentiment
+
 def get_sentiment(text):
-    score = sia.polarity_scores(text)
+    score = sia.polarity_scores(str(text))
 
     if score["compound"] >= 0.05:
         return "Positive"
     elif score["compound"] <= -0.05:
         return "Negative"
-    else:
-        return "Neutral"
+    return "Neutral"
 
-# Analyze every post
+
+# Analyze YouTube video titles
 data["sentiment"] = data["text"].apply(get_sentiment)
 
-# Save analyzed data
-data.to_csv("data/analyzed_data.csv", index=False)
+# Save results separately
+data.to_csv(OUTPUT_FILE, index=False)
 
-# Show results
-print("\nSentiment Analysis:")
+print("\nYouTube Sentiment Analysis:")
 print(data[["topic", "text", "sentiment"]])
 
 print("\nSentiment Counts:")
 print(data["sentiment"].value_counts())
 
-print("\nAnalyzed data saved successfully!")
+print("\nSaved to:", OUTPUT_FILE)

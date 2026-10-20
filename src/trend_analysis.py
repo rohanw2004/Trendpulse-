@@ -1,51 +1,54 @@
 import pandas as pd
 from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+INPUT_FILE = BASE_DIR / "data" / "youtube_data.csv"
+OUTPUT_FILE = BASE_DIR / "data" / "trend_scores.csv"
+
+
+def normalize_series(series):
+    series = series.replace(
+        [float("inf"), -float("inf")], 0
+    ).fillna(0)
+
+    minimum = series.min()
+    maximum = series.max()
+
+    if maximum == minimum:
+        return series * 0 + 50
+
+    return (series - minimum) / (maximum - minimum) * 100
+
 
 def calculate_trend_score(data):
-    # Total engagement for each topic
-    topic_engagement = data.groupby("topic")["engagement"].sum()
+    data = data.copy()
 
-    # Total views for each topic
+    data["engagement"] = (
+        data["likes"] + data["comments"] + data["shares"]
+    )
+
+    data["timestamp"] = pd.to_datetime(
+        data["timestamp"], utc=True
+    )
+
+    data = data.sort_values("timestamp")
+
+    topic_engagement = data.groupby("topic")["engagement"].sum()
     topic_views = data.groupby("topic")["views"].sum()
 
-    # Normalize engagement
-    engagement_min = topic_engagement.min()
-    engagement_max = topic_engagement.max()
-
-    engagement_normalized = (
-        (topic_engagement - engagement_min)
-        / (engagement_max - engagement_min)
-    ) * 100
-
-    # Normalize views
-    views_min = topic_views.min()
-    views_max = topic_views.max()
-
-    views_normalized = (
-        (topic_views - views_min)
-        / (views_max - views_min)
-    ) * 100
-
-    # Calculate growth percentage
-    growth_percent = (
+    data["growth_percent"] = (
         data.groupby("topic")["engagement"]
-        .pct_change()
-        .groupby(data["topic"])
-        .mean()
+        .pct_change(fill_method=None)
+        .replace([float("inf"), -float("inf")], 0)
         .fillna(0) * 100
     )
 
-    # Normalize growth
-    growth_min = growth_percent.min()
-    growth_max = growth_percent.max()
+    topic_growth = data.groupby("topic")["growth_percent"].mean()
 
-    growth_normalized = (
-        (growth_percent - growth_min)
-        / (growth_max - growth_min)
-    ) * 100
+    engagement_normalized = normalize_series(topic_engagement)
+    views_normalized = normalize_series(topic_views)
+    growth_normalized = normalize_series(topic_growth)
 
-    # Final weighted trend score
     final_trend_score = (
         engagement_normalized * 0.40
         + views_normalized * 0.30
@@ -54,9 +57,14 @@ def calculate_trend_score(data):
 
     return final_trend_score.sort_values(ascending=False)
 
-  # Save trend scores
-trend_scores = final_trend_score.reset_index()
-trend_scores.columns = ["topic", "trend_score"]
 
-output_file = Path("data/trend_scores.csv")
-trend_scores.to_csv(output_file, index=False)
+if __name__ == "__main__":
+    data = pd.read_csv(INPUT_FILE)
+    scores = calculate_trend_score(data)
+
+    trend_scores = scores.rename("trend_score").reset_index()
+    trend_scores.to_csv(OUTPUT_FILE, index=False)
+
+    print("\nFinal Trend Scores:")
+    print(trend_scores)
+    print("\nSaved to:", OUTPUT_FILE)

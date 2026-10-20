@@ -1,11 +1,24 @@
 import pandas as pd
 from pathlib import Path
 
+def normalize_series(series):
+    series = series.replace(
+        [float("inf"), -float("inf")], 0
+    ).fillna(0)
+
+    minimum = series.min()
+    maximum = series.max()
+
+    if maximum == minimum:
+        return series * 0 + 50
+
+    return (series - minimum) / (maximum - minimum) * 100
+
 # Project folder
 BASE_DIR = Path.cwd()
 
-# Load sample data
-data_file = BASE_DIR / "data" / "sample_data.csv"
+# Load real YouTube data
+data_file = BASE_DIR / "data" / "youtube_data.csv"
 data = pd.read_csv(data_file)
 
 data["timestamp"] = pd.to_datetime(data["timestamp"])
@@ -29,7 +42,8 @@ data["engagement_growth"] = (
 
 data["growth_percent"] = (
     data.groupby("topic")["engagement"]
-    .pct_change()
+    .pct_change(fill_method=None)
+    .replace([float("inf"), -float("inf")], 0)
     .fillna(0) * 100
 )
 
@@ -59,28 +73,14 @@ print(topic_trends)
 
 # Normalize engagement to 0-100
 topic_engagement = data.groupby("topic")["engagement"].sum()
-
-engagement_min = topic_engagement.min()
-engagement_max = topic_engagement.max()
-
-engagement_normalized = (
-    (topic_engagement - engagement_min)
-    / (engagement_max - engagement_min)
-) * 100
+engagement_normalized = normalize_series(topic_engagement)
 
 print("\nNormalized Engagement:")
 print(engagement_normalized)
 
 # Normalize views to 0-100
 topic_views = data.groupby("topic")["views"].sum()
-
-views_min = topic_views.min()
-views_max = topic_views.max()
-
-views_normalized = (
-    (topic_views - views_min)
-    / (views_max - views_min)
-) * 100
+views_normalized = normalize_series(topic_views)
 
 print("\nNormalized Views:")
 print(views_normalized)
@@ -96,13 +96,7 @@ print("\nTopic Growth Percentage:")
 print(topic_growth)
 
 # Normalize growth percentage to 0-100
-growth_min = topic_growth.min()
-growth_max = topic_growth.max()
-
-growth_normalized = (
-    (topic_growth - growth_min)
-    / (growth_max - growth_min)
-) * 100
+growth_normalized = normalize_series(topic_growth)
 
 print("\nNormalized Growth:")
 print(growth_normalized)
