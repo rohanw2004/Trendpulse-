@@ -171,7 +171,7 @@ if theme_mode == "Light Mode":
         color: #24324a !important;
     }
 
-
+    
 /* Sidebar background — Light Mode */
 [data-testid="stSidebar"],
 [data-testid="stSidebar"] > div,
@@ -258,7 +258,7 @@ if theme_mode == "Light Mode":
     hr {
         border-color: #d5deed !important;
     }
-
+    
 
 /* Sidebar navigation: Light Mode */
 [data-testid="stSidebar"],
@@ -302,7 +302,7 @@ if theme_mode == "Light Mode":
     color: #24324a !important;
     background-color: #ffffff !important;
 }
-
+   
 /* Light Mode: inner navigation area */
 [data-testid="stSidebarNav"],
 [data-testid="stSidebarNav"] > div,
@@ -320,7 +320,7 @@ if theme_mode == "Light Mode":
     color: #24324a !important;
 }
 
-
+  
     /* Top Streamlit toolbar — Light Mode */
     header[data-testid="stHeader"],
     [data-testid="stToolbar"],
@@ -329,7 +329,7 @@ if theme_mode == "Light Mode":
         background-color: #e7edf7 !important;
     }
 
-
+    
 /* Keep toolbar controls dark and visible */
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] button svg,
@@ -360,7 +360,7 @@ header[data-testid="stHeader"] button svg,
 
     </style>
     """, unsafe_allow_html=True)
-
+  
 # ---------------- HELPERS ----------------
 def load_csv(filename):
     path = DATA_DIR / filename
@@ -381,7 +381,7 @@ def number(value):
 
 def fmt(value):
     return f"{value:,.0f}"
-
+  
 @st.dialog("Expanded chart", width="large")
 def show_expanded_chart(chart_type):
     if chart_type == "engagement":
@@ -540,7 +540,7 @@ unique_topics = len(set(row.get("topic", "Unknown") for row in data))
 
 st.subheader("📊 Overview")
 
-m1, m2 = st.columns(2)
+m1, m2 = st.columns(2) 
 m3, m4 = st.columns(2)
 m1.metric("Videos analyzed", fmt(total_videos))
 m2.metric("Total views", fmt(total_views))
@@ -760,14 +760,14 @@ if sentiment_total:
         title="Video Title Sentiment Distribution",
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font_color=text_color,
+        font_color=text_color, 
         width=850,
         height=480,
         margin=dict(l=10, r=10, t=55, b=10),
         showlegend=True,
     )
 
-
+    
     st.plotly_chart(
         donut_fig,
         use_container_width=False,
@@ -779,7 +779,7 @@ if sentiment_total:
         },
     )
 
-
+  
     if st.button("⛶ Expand sentiment chart", key="expand_sentiment"):
         show_expanded_chart("sentiment")
 
@@ -825,7 +825,7 @@ if keywords:
     )
     max_count = max((number(row.get("count")) for row in keyword_rows), default=0)
 
-
+    
     # Interactive top keywords chart
     chart_keywords = keyword_rows[:10]
 
@@ -867,7 +867,7 @@ if keywords:
             "responsive": False,
         },
     )
-
+  
     if st.button("⛶ Expand keyword chart", key="expand_keywords"):
         show_expanded_chart("keywords")
 
@@ -971,3 +971,131 @@ else:
         "Trend Growth is available with Real YouTube Data. "
         "Switch data source in the sidebar to view it."
     )
+
+
+# ==================== TRENDPULSE FOOTER ====================
+
+st.markdown("""
+<style>
+.trendpulse-footer {
+    margin-top: 55px;
+    padding: 28px 16px 18px;
+    border-top: 1px solid rgba(128, 128, 128, 0.30);
+    text-align: center;
+    border-radius: 14px 14px 0 0;
+}
+
+.tp-footer-title {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.tp-footer-subtitle {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-bottom: 20px;
+}
+
+.tp-project-label {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid #16a085;
+    color: #16a085;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+.tp-team-heading {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+
+.tp-team {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+
+
+.tp-member {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px;
+    box-sizing: border-box;
+
+    background-color: var(--secondary-background-color, #202833);
+    color: var(--text-color, #55D6BE) !important;
+
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 14px;
+
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.tp-member:hover {
+    border-color: #16a085;
+}
+
+
+
+.tp-copyright {
+    font-size: 12px;
+    opacity: 0.65;
+    margin-top: 22px;
+}
+
+.tp-tech {
+    font-size: 11px;
+    opacity: 0.60;
+    margin-top: 7px;
+}
+</style>
+
+<div class="trendpulse-footer">
+    <div class="tp-footer-title">〽 TrendPulse</div>
+
+    
+<div class="tp-footer-subtitle">
+    Real-Time Social Media Trend Analyzer
+</div>
+
+<div class="tp-project-label">
+    BIG DATA ANALYTICS PROJECT
+</div>
+
+<div class="tp-team-heading">
+    Developed By
+</div>
+
+<div class="tp-team">
+    <div class="tp-member">Rohan Wajekar</div>
+    <div class="tp-member">Dev Prasad</div>
+    <div class="tp-member">Samrudhi Dere</div>
+    <div class="tp-member">Devika Jagtap</div>
+</div>
+
+<div class="tp-copyright">
+    © 2026 TrendPulse · BDA Academic Project
+</div>
+
+<div class="tp-tech">
+    Built with Python · Streamlit · Pandas · Plotly
+</div>
+
+</div>
+""", unsafe_allow_html=True)
